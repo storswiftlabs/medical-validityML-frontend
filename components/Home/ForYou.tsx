@@ -19,7 +19,7 @@ function ForYou() {
                 <span className='mr-[0.4rem]'>Medical-ZKML</span>
                 <span className='font-extralight text-[#343531]'>
                     is an assisted diagnosis and treatment system that can provide diagnosis and treatment suggestions for the symptoms described while protecting your privacy. Its
-                    underlying technology uses multiple models to assist in prediction and is developed using Leo zero-knowledge proof language to achieve the goal of privacy
+                    underlying technology uses multiple models to assist in prediction and is developed using zero-knowledge proof language to achieve the goal of privacy
                     prediction.
                 </span>
             </p>
@@ -31,7 +31,7 @@ function ForYou() {
                         Privacy Protection
                     </h4>
                     <p className='whitespace-pre-line'>
-                        Use Leo zero-knowledge proof language to protect user input data. Only the user is aware of the input content and provides Proof for the user to verify.
+                        Use zero-knowledge proof language to protect user input data. Only the user is aware of the input content and provides Proof for the user to verify.
                     </p>
                 </div>
                 <div className='w-[20rem]'>
