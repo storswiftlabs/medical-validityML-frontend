@@ -1,0 +1,37 @@
+.cardA {
+	box-sizing: border-box;
+	width: 220px;
+	height: 260px;
+	background: rgba(217, 217, 217, 0.58);
+	border: 1px solid white;
+	box-shadow: 12px 17px 51px rgba(0, 0, 0, 0.22);
+	backdrop-filter: blur(6px);
+	border-radius: 17px;
+	text-align: center;
+	cursor: pointer;
+	transition: all 0.5s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	user-select: none;
+	font-weight: bolder;
+	color: black;
+	flex-direction: column;
+}
+
+.cardA:hover {
+	border: 1px solid #2d89f1;
+	transform: scale(1.05);
+}
+
+.cardA:active {
+	transform: scale(0.95) rotateZ(1.7deg);
+}
+
+div[data-slot='mainWrapper'] {
+	height: 100%;
+}
+
+.ant-select-selection-item{
+	/* display: none !important; */
+}
