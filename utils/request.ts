@@ -68,9 +68,13 @@ export async function postOutcomes(Obj: { user: string; page: number; page_size:
 
 export const fetchList = async (url: string) => {
 	// ipfs
-	const response = await fetch(url);
-	const data = await response.text();
-	return data;
+	try {
+		const response = await fetch(url);
+		const data = await response.text();
+		return data;
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 export async function postUser(Obj: any) {

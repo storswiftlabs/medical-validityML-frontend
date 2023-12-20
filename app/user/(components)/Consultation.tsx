@@ -31,6 +31,7 @@ import { PlusIcon, SearchIcon } from '@/components/Icon/AcmeLogo';
 import { useRouter } from 'next/navigation';
 
 import { debounce } from '@/utils/throttle';
+import { toast } from 'react-toastify';
 
 const statusColorMap: Record<string, ChipProps['color']> = {
 	active: 'success',
@@ -54,6 +55,18 @@ export default function Consultation({ onDataReceived }: { onDataReceived: (leng
 	const [filterValue, setFilterValue] = useState('');
 	const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
 	const [upData, setUpdata] = useState({} as any);
+	const [networkPrompt, setNetworkPrompt] = useState(false);
+	const notify = () =>
+		toast.warn('Network error, failed to view details, please check the network', {
+			position: 'top-right',
+			autoClose: 5000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			theme: 'light',
+		});
 
 	const fetchData = useCallback(
 		async (address: string, page: number, page_size: number) => {
@@ -132,7 +145,6 @@ export default function Consultation({ onDataReceived }: { onDataReceived: (leng
 	const handleOpen = async (result: string, name: string) => {
 		try {
 			const illnessesNameList = await getDiseaseInfo({ disease: name });
-
 			const nameList = illnessesNameList.data.output.result.map((item: any) => item.value);
 			const suggestion = await postRecommend({ disease: name });
 
@@ -140,11 +152,13 @@ export default function Consultation({ onDataReceived }: { onDataReceived: (leng
 				const processedArray = `https://ipfs.io/ipfs/${suggestion.data}`;
 
 				const fetchPromises = await fetchList(processedArray);
-				try {
+
+				if (fetchPromises != undefined) {
 					const strArr = splitStringWithRegex(fetchPromises);
 					setPredictingOutcomes({ result, suggestion: strArr || [''], nameList, name });
-				} catch (error) {
-					console.log(error);
+				} else {
+					setNetworkPrompt(true)
+					notify();
 				}
 			}
 		} catch (error) {
@@ -213,54 +227,74 @@ export default function Consultation({ onDataReceived }: { onDataReceived: (leng
 	}, [address, router]);
 
 	const viewModal = useCallback(() => {
-		const modalHeader = isModal ? `Diagnosis : ${predictingOutcomes.name}` : 'Records uploaded';
-		const modalBody = isModal ? (
-			<div>
-				<div className='mb-1'>
-					<span className=' font-[600]'>The diagnosis is</span> : <div>{predictingOutcomes.result}</div>
-				</div>
+		if (!networkPrompt) {
+			const modalHeader = isModal ? `Diagnosis : ${predictingOutcomes.name}` : 'Records uploaded';
+			const modalBody = isModal ? (
 				<div>
-					<span className=' font-[600]'>Results of current disease diagnostic appearances :</span>
-				</div>
+					<div className='mb-1'>
+						<span className=' font-[600]'>The diagnosis is</span> : <div>{predictingOutcomes.result}</div>
+					</div>
+					<div>
+						<span className=' font-[600]'>Results of current disease diagnostic appearances :</span>
+					</div>
 
-				<ul className='list-disc px-[2rem]'>
-					{predictingOutcomes.nameList.map((item, i) => {
-						return (
+					<ul className='list-disc px-[2rem]'>
+						{predictingOutcomes.nameList.map((item, i) => {
+							return (
+								<li className='my-[0.4rem]' key={i}>
+									{item}
+								</li>
+							);
+						})}
+					</ul>
+					<div>
+						<span className=' font-[600]'>The following are your disease recommendations :</span>
+					</div>
+					<ul className='list-disc px-[2rem]'>
+						{predictingOutcomes.suggestion.map((i) => (
 							<li className='my-[0.4rem]' key={i}>
-								{item}
+								{i.replace(/"$/, '')}
 							</li>
-						);
-					})}
-				</ul>
-				<div>
-					<span className=' font-[600]'>The following are your disease recommendations :</span>
+						))}
+					</ul>
 				</div>
-				<ul className='list-disc px-[2rem]'>
-					{predictingOutcomes.suggestion.map((i) => (
-						<li className='my-[0.4rem]' key={i}>
-							{i.replace(/"$/, '')}
-						</li>
-					))}
-				</ul>
-			</div>
-		) : (
-			<>
-				<ul className='list-disc px-[2rem]'>
-					{upData.inputs.map((i: any) => (
-						<li className='my-[0.4rem]' key={i}>
-							{i.key} : {i.value}
-						</li>
-					))}
-				</ul>
-			</>
-		);
-		return (
+			) : (
+				<>
+					<ul className='list-disc px-[2rem]'>
+						{upData.inputs.map((i: any) => (
+							<li className='my-[0.4rem]' key={i}>
+								{i.key} : {i.value}
+							</li>
+						))}
+					</ul>
+				</>
+			);
+			return (
+				<Modal hideCloseButton size={'2xl'} isOpen={isOpen} onClose={onClose} scrollBehavior='inside'>
+					<ModalContent>
+						{(onClose) => (
+							<>
+								<ModalHeader className='flex flex-col gap-1'>{modalHeader}</ModalHeader>
+								<ModalBody>{modalBody}</ModalBody>
+								<ModalFooter>
+									<Button color='danger' variant='light' onPress={onClose}>
+										Close
+									</Button>
+									<Button color='primary' onPress={onClose}>
+										OK
+									</Button>
+								</ModalFooter>
+							</>
+						)}
+					</ModalContent>
+				</Modal>
+			);
+		} else {
 			<Modal hideCloseButton size={'2xl'} isOpen={isOpen} onClose={onClose} scrollBehavior='inside'>
 				<ModalContent>
 					{(onClose) => (
 						<>
-							<ModalHeader className='flex flex-col gap-1'>{modalHeader}</ModalHeader>
-							<ModalBody>{modalBody}</ModalBody>
+							<ModalBody>{'12'}</ModalBody>
 							<ModalFooter>
 								<Button color='danger' variant='light' onPress={onClose}>
 									Close
@@ -272,9 +306,9 @@ export default function Consultation({ onDataReceived }: { onDataReceived: (leng
 						</>
 					)}
 				</ModalContent>
-			</Modal>
-		);
-	}, [isModal, isOpen, onClose, predictingOutcomes.name, predictingOutcomes.nameList, predictingOutcomes.result, predictingOutcomes.suggestion, upData.inputs]);
+			</Modal>;
+		}
+	}, [isModal, isOpen, networkPrompt, onClose, predictingOutcomes.name, predictingOutcomes.nameList, predictingOutcomes.result, predictingOutcomes.suggestion, upData.inputs]);
 
 	const topContent = useMemo(() => {
 		return (
