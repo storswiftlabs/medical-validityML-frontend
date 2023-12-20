@@ -11,6 +11,7 @@ import { useAccount } from 'wagmi';
 import { useRouter } from 'next/navigation';
 import { SearchIcon } from '@/components/Icon/AcmeLogo';
 import { convertImageFormat } from '@/utils/convertImageFormat';
+import FormData from '@/components/FormData';
 
 export default function DiaTable() {
 	const { address, isConnected } = useAccount();
@@ -296,8 +297,8 @@ export default function DiaTable() {
 			</Table>
 			{/* //TODO:Image upload diagnostic function */}
 			{/* <CasesModal operatorList={operatorList} isOpen={isOpen} onClose={onClose} /> */}
-
-			<EnterModal isReset={isReset} enterObject={enterObject} operatorList={operatorList} isOpen={isOpen1} onClose={onClose1} />
+			<FormData data={enterObject} operatorList={operatorList}  onClose={onClose1}  isOpen={isOpen1} />
+			{/* <EnterModal isReset={isReset} enterObject={enterObject} operatorList={operatorList} isOpen={isOpen1} onClose={onClose1} /> */}
 		</>
 	);
 }

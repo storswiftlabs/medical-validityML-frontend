@@ -57,6 +57,10 @@ function EnterModal({
 
 	const onSubmit = useCallback(
 		async (data: any) => {
+
+			console.log(data,'data');
+			
+
 			setSubData(data);
 
 			if (Array.from(selectedKeys)[0] === 'Choose the engine you need') {
@@ -73,6 +77,8 @@ function EnterModal({
 				module: Array.from(selectedKeys)[0],
 				inputs: [] as any[],
 			};
+
+			
 
 			for (let key in data) {
 				let matchedInput = enterObject.inputs.find((item) => item.name === key);

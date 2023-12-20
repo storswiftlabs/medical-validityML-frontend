@@ -27,7 +27,11 @@ export interface Data {
 export interface Input {
 	name: string;
 	description: string;
-	index: string;
+	index: number;
+	input_max: number;
+	input_min: number;
+	input_decimal_length: number;
+	warn: string;
 	input_method: string;
 	select: Select[];
 	default?: any;

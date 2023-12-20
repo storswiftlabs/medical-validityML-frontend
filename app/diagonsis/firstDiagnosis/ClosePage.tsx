@@ -8,6 +8,7 @@ import { Skeleton } from 'antd';
 import { useRouter } from 'next/navigation';
 import { convertImageFormat } from '@/utils/convertImageFormat';
 import { useAccount } from 'wagmi';
+import FormData from '@/components/FormData';
 
 function ClosePage({ isLoading, diseasesData }: { isLoading: boolean; diseasesData: DiseaseData }) {
 	const { address } = useAccount();
@@ -89,7 +90,9 @@ function ClosePage({ isLoading, diseasesData }: { isLoading: boolean; diseasesDa
 					</div>
 				</div>
 			</div>
-			<EnterModal isReset={true} enterObject={enterObject} operatorList={operatorList} isOpen={isOpen1} onClose={onClose1} />
+			<FormData data={enterObject} operatorList={operatorList}  onClose={onClose1}  isOpen={isOpen1} />
+
+			{/* <EnterModal isReset={true} enterObject={enterObject} operatorList={operatorList} isOpen={isOpen1} onClose={onClose1} /> */}
 		</div>
 	);
 }
