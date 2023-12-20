@@ -139,7 +139,7 @@ const FormData = ({ data, operatorList, isOpen, onClose }: { onClose: () => void
 										},
 									]}
 								>
-									<Input variant='bordered' id='inp' className='max-w-[18rem] enter-input' style={{ width: 260 }} placeholder={item.select[0].key} />
+									<Input variant='bordered' id='inp' className='max-w-[18rem] enter-input' style={{ width: 260 }} placeholder={'Please enter ' + item.select[0].key} />
 								</Form.Item>
 							</Form.Item>
 						);
