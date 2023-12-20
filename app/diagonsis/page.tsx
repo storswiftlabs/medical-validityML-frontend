@@ -65,7 +65,7 @@ function Page() {
 									}}
 									title='Return visit'
 									text='Based on the symptoms you know
-	A brief (2 minute) symptom assessment is performed. The information you provide is secure and will not be shared. Your results will include:
+	A brief (2 mins) symptom assessment is performed. The information you provide is secure and will not be shared. Your results will include:
 	Advice on what to do next.'
 								/>
 							</div>
