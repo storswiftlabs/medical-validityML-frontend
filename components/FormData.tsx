@@ -109,7 +109,7 @@ const FormData = ({ data, operatorList, isOpen, onClose }: { onClose: () => void
 					if (item.input_method === 'input') {
 						console.log(item, 'item');
 						return (
-							<Form.Item key={index} label={<span className='whitespace-normal text-[#773247] mr-[0.4rem] text-[1rem] w-[12rem]'>{item.name}</span>}>
+							<Form.Item key={index} label={<span className='whitespace-normal text-[#773247] mr-[0.4rem] text-[1rem] w-[12rem] h-[5rem]'>{item.name}</span>}>
 								<Form.Item
 									initialValue={isBack ? getSelectKeyByName(item.name) : item.default ? item.default.value : ''}
 									name={item.name}
@@ -139,7 +139,7 @@ const FormData = ({ data, operatorList, isOpen, onClose }: { onClose: () => void
 										},
 									]}
 								>
-									<Input variant='bordered' id='inp' className='max-w-[18rem] enter-input' style={{ width: 260 }} placeholder='Please input' />
+									<Input variant='bordered' id='inp' className='max-w-[18rem] enter-input' style={{ width: 260 }} placeholder={item.select[0].key} />
 								</Form.Item>
 							</Form.Item>
 						);
@@ -148,7 +148,7 @@ const FormData = ({ data, operatorList, isOpen, onClose }: { onClose: () => void
 							<Form.Item
 								key={index}
 								className='my-mpdal'
-								label={<span className='whitespace-normal text-[#773247] mr-[0.4rem] text-[1rem] w-[12rem]'>{item.name}</span>}
+								label={<span className='whitespace-normal text-[#773247] mr-[0.4rem] text-[1rem] w-[12rem] h-[5rem]'>{item.name}</span>}
 							>
 								<Form.Item
 									initialValue={isBack ? getSelectKeyByName(item.name) : item.default ? String(item.default.value) : ''}
