@@ -1,5 +1,6 @@
 'use client';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
 	Table,
 	TableHeader,
@@ -105,34 +106,29 @@ export default function Consultation({ onDataReceived }: { onDataReceived: (leng
 	useEffect(() => {
 		fetchData(address!, 0, 10);
 	}, [address]);
+	}, [address]);
 
 	const getIntervalFetchData = () => {
 		fetchData(address!, pagination.page, pagination.page_size);
 	};
 
-	const updatePagination = useMemo(
-		() => async (value: string, page: number, page_size: number) => {
-			if (value) {
-				// const filteredData = allData.filter((item) => item.disease.toLowerCase().includes(value.toLowerCase()));
-				const res = await getUpDate({ user: address!, key: value, page, page_size });
-				setPagination((s) => ({ ...s, data: res.data, count: res.count, page }));
-			} else {
-				// setPagination((s) => ({ ...s, data: allData }));
-			}
-		},
-		[address]
-	);
+	const updatePagination = async (value: string, page: number, page_size: number) => {
+		if (value) {
+			// const filteredData = allData.filter((item) => item.disease.toLowerCase().includes(value.toLowerCase()));
+			const res = await getUpDate({ user: address!, key: value, page, page_size });
+			setPagination((s) => ({ ...s, data: res.data, count: res.count, page }));
+		} else {
+			// setPagination((s) => ({ ...s, data: allData }));
+		}
+	};
 
-	const onPaginationChange = useCallback(
-		(page: number) => {
-			if (filterValue != '') {
-				updatePagination(filterValue, page - 1, 10);
-			} else {
-				fetchData(address!, page - 1, pagination.page_size);
-			}
-		},
-		[address, fetchData, filterValue, pagination.page_size, updatePagination]
-	);
+	const onPaginationChange = (page: number) => {
+		if (filterValue != '') {
+			updatePagination(filterValue, page - 1, 10);
+		} else {
+			fetchData(address!, page - 1, pagination.page_size);
+		}
+	};
 
 	function splitStringWithRegex(str: string) {
 		const regex = /\d+\.[\s\S]+?(?=\d+\.)|\d+\.[\s\S]+$/g;
@@ -155,6 +151,7 @@ export default function Consultation({ onDataReceived }: { onDataReceived: (leng
 					const strArr = splitStringWithRegex(fetchPromises);
 					setPredictingOutcomes({ result, suggestion: strArr || [''], nameList, name });
 				} else {
+					setNetworkPrompt(true);
 					setNetworkPrompt(true);
 					notify();
 				}
@@ -183,19 +180,16 @@ export default function Consultation({ onDataReceived }: { onDataReceived: (leng
 		setIsDel(selectedKeys instanceof Set ? selectedKeys.size !== 0 : selectedKeys === 'all');
 	}, [selectedKeys]);
 
-	const onSearchChange = useCallback(
-		(value?: string) => {
-			setSelectedKeys(new Set([]));
-			if (value == '') {
-				fetchData(address!, 0, 10);
-			}
-			setFilterValue(value || '');
-			updatePagination(value || '', 0, 10);
-		},
-		[address, fetchData, updatePagination]
-	);
+	const onSearchChange = (value?: string) => {
+		setSelectedKeys(new Set([]));
+		if (value == '') {
+			fetchData(address!, 0, 10);
+		}
+		setFilterValue(value || '');
+		updatePagination(value || '', 0, 10);
+	};
 
-	const onDeleteMultipleChoice = useCallback(async () => {
+	const onDeleteMultipleChoice = async () => {
 		const keysList = Array.from(selectedKeys, (key: any) => parseInt(key));
 		try {
 			await postDiagnosticDeletion({ user: address, ids: keysList });
@@ -205,26 +199,23 @@ export default function Consultation({ onDataReceived }: { onDataReceived: (leng
 		} catch (err) {
 			console.log(err);
 		}
-	}, [address, fetchData, pagination.page, pagination.page_size, selectedKeys]);
+	};
 
-	const onDelete = useCallback(
-		async (ids: number) => {
-			try {
-				await postDiagnosticDeletion({ user: address, ids: [ids] });
-				fetchData(address!, pagination.page, pagination.page_size);
-				setFilterValue('');
-			} catch (err) {
-				console.log(err);
-			}
-		},
-		[address, fetchData, pagination.page, pagination.page_size]
-	);
+	const onDelete = async (ids: number) => {
+		try {
+			await postDiagnosticDeletion({ user: address, ids: [ids] });
+			fetchData(address!, pagination.page, pagination.page_size);
+			setFilterValue('');
+		} catch (err) {
+			console.log(err);
+		}
+	};
 
 	useEffect(() => {
 		if (!address) return router.push('/');
 	}, [address, router]);
 
-	const viewModal = useCallback(() => {
+	const viewModal = () => {
 		if (!networkPrompt) {
 			const modalHeader = isModal ? `Diagnosis : ${predictingOutcomes.name}` : 'Records uploaded';
 			const modalBody = isModal ? (
@@ -306,9 +297,9 @@ export default function Consultation({ onDataReceived }: { onDataReceived: (leng
 				</ModalContent>
 			</Modal>;
 		}
-	}, [isModal, isOpen, networkPrompt, onClose, predictingOutcomes.name, predictingOutcomes.nameList, predictingOutcomes.result, predictingOutcomes.suggestion, upData.inputs]);
+	};
 
-	const topContent = useMemo(() => {
+	const topContent = () => {
 		return (
 			<div className='flex flex-col gap-4'>
 				<div className='flex justify-between gap-3 items-end'>
@@ -340,28 +331,28 @@ export default function Consultation({ onDataReceived }: { onDataReceived: (leng
 				</div>
 			</div>
 		);
-	}, [filterValue, isDel, onDeleteMultipleChoice, onSearchChange]);
+	};
 
-	const bottomContent = useMemo(() => {
-		return (
-			Math.ceil(pagination.count / pagination.page_size) > 1 && (
-				<div className='py-2 px-2 flex justify-between items-center'>
-					<Pagination
-						showControls
-						isDisabled={false}
-						classNames={{
-							cursor: 'bg-foreground text-background',
-						}}
-						color='default'
-						page={pagination.page + 1}
-						total={Math.ceil(pagination.count / pagination.page_size)}
-						variant='light'
-						onChange={onPaginationChange}
-					/>
-				</div>
-			)
+	const bottomContent: () => React.ReactNode = () => {
+		return Math.ceil(pagination.count / pagination.page_size) > 1 ? (
+			<div className='py-2 px-2 flex justify-between items-center'>
+				<Pagination
+					showControls
+					isDisabled={false}
+					classNames={{
+						cursor: 'bg-foreground text-background',
+					}}
+					color='default'
+					page={pagination.page + 1}
+					total={Math.ceil(pagination.count / pagination.page_size)}
+					variant='light'
+					onChange={onPaginationChange}
+				/>
+			</div>
+		) : (
+			<></>
 		);
-	}, [onPaginationChange, pagination.count, pagination.page, pagination.page_size]);
+	};
 
 	const classNames = useMemo(
 		() => ({
@@ -387,7 +378,7 @@ export default function Consultation({ onDataReceived }: { onDataReceived: (leng
 			<Table
 				isCompact
 				removeWrapper
-				bottomContent={bottomContent}
+				bottomContent={bottomContent()}
 				bottomContentPlacement='outside'
 				checkboxesProps={{
 					classNames: {
@@ -397,7 +388,7 @@ export default function Consultation({ onDataReceived }: { onDataReceived: (leng
 				classNames={classNames}
 				selectedKeys={selectedKeys}
 				selectionMode='multiple'
-				topContent={topContent}
+				topContent={topContent()}
 				topContentPlacement='outside'
 				onSelectionChange={(keys: Selection) => {
 					if (keys === 'all') {

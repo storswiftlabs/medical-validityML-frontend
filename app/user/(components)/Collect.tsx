@@ -15,17 +15,13 @@ function Collect({ articleCollectionInterface, collectionOrNot }: { articleColle
 		total: 0,
 	});
 
-	const onPaginationChange = useCallback(
-		(page: number) => {
-			setPagination((prevPagination) => ({
-				...prevPagination,
-				pageNum: page,
-				data: collectionOrNot.slice((page - 1) * prevPagination.pageSize, page * prevPagination.pageSize),
-			}));
-		},
-		[collectionOrNot]
-	);
-
+	const onPaginationChange = (page: number) => {
+		setPagination((prevPagination) => ({
+			...prevPagination,
+			pageNum: page,
+			data: collectionOrNot.slice((page - 1) * prevPagination.pageSize, page * prevPagination.pageSize),
+		}));
+	};
 	useEffect(() => {
 		setPagination((p) => ({
 			...p,
@@ -34,7 +30,7 @@ function Collect({ articleCollectionInterface, collectionOrNot }: { articleColle
 		}));
 	}, [collectionOrNot, pagination.pageSize]);
 
-	const bottomContent = useMemo(() => {
+	const bottomContent = () => {
 		return (
 			pagination.total > 1 && (
 				<div className='py-2 px-2 flex justify-between items-center'>
@@ -51,7 +47,7 @@ function Collect({ articleCollectionInterface, collectionOrNot }: { articleColle
 				</div>
 			)
 		);
-	}, [pagination, onPaginationChange]);
+	};
 
 	const DetermineIfCollection = (str: string): boolean => {
 		for (let i = 0; i < collectionOrNot.length; i++) {
@@ -71,7 +67,7 @@ function Collect({ articleCollectionInterface, collectionOrNot }: { articleColle
 			) : (
 				<>No related articles</>
 			)}
-			{bottomContent}
+			{bottomContent()}
 		</div>
 	);
 }
