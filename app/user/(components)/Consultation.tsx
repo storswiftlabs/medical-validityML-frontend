@@ -1,6 +1,5 @@
 'use client';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
 	Table,
 	TableHeader,
@@ -105,7 +104,6 @@ export default function Consultation({ onDataReceived }: { onDataReceived: (leng
 
 	useEffect(() => {
 		fetchData(address!, 0, 10);
-	}, [address]);
 	}, [address]);
 
 	const getIntervalFetchData = () => {
