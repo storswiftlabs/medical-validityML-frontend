@@ -1,5 +1,5 @@
 'use client';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
 	Table,
 	TableHeader,
@@ -67,11 +67,9 @@ export default function Consultation({ onDataReceived }: { onDataReceived: (leng
 			progress: undefined,
 			theme: 'light',
 		});
-
+	const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
 	const fetchData = useCallback(
 		async (address: string, page: number, page_size: number) => {
-			let timeoutId: NodeJS.Timeout | null = null;
-
 			try {
 				const res = await postOutcomes({ user: address!, page, page_size });
 				if (res.data) {
@@ -81,11 +79,11 @@ export default function Consultation({ onDataReceived }: { onDataReceived: (leng
 					});
 
 					if (hasMatchingItem && page == 0) {
-						timeoutId = setTimeout(() => {
-							fetchData(address, page, 10);
+						timeoutIdRef.current = setTimeout(() => {
+							fetchData(address, page, 10); // 使用当前的 page 值
 						}, 15000);
 					} else {
-						timeoutId && clearTimeout(timeoutId);
+						timeoutIdRef.current && clearTimeout(timeoutIdRef.current);
 					}
 					setPagination((s) => ({ ...s, count: res.count, data: res.data, page, page_size }));
 					onDataReceived(res.count);
@@ -106,7 +104,7 @@ export default function Consultation({ onDataReceived }: { onDataReceived: (leng
 
 	useEffect(() => {
 		fetchData(address!, 0, 10);
-	}, [address, fetchData]);
+	}, [address]);
 
 	const getIntervalFetchData = () => {
 		fetchData(address!, pagination.page, pagination.page_size);
@@ -157,7 +155,7 @@ export default function Consultation({ onDataReceived }: { onDataReceived: (leng
 					const strArr = splitStringWithRegex(fetchPromises);
 					setPredictingOutcomes({ result, suggestion: strArr || [''], nameList, name });
 				} else {
-					setNetworkPrompt(true)
+					setNetworkPrompt(true);
 					notify();
 				}
 			}
