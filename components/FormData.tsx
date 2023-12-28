@@ -32,6 +32,7 @@ const FormData = ({ data, operatorList, isOpen, onClose }: { onClose: () => void
 	const { address } = useAccount();
 	const [isBack, setIsBack] = useState(false);
 	const [subResult, setSubResult] = useState({} as any);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const judgingFunction = (setArr: any) => {
 		const setArray = Array.from(setArr);
@@ -139,7 +140,13 @@ const FormData = ({ data, operatorList, isOpen, onClose }: { onClose: () => void
 										},
 									]}
 								>
-									<Input variant='bordered' id='inp' className='max-w-[18rem] enter-input' style={{ width: 260 }} placeholder={'Please enter ' + item.select[0].key} />
+									<Input
+										variant='bordered'
+										id='inp'
+										className='max-w-[18rem] enter-input'
+										style={{ width: 260 }}
+										placeholder={'Please enter ' + item.select[0].key}
+									/>
 								</Form.Item>
 							</Form.Item>
 						);
@@ -273,10 +280,12 @@ const FormData = ({ data, operatorList, isOpen, onClose }: { onClose: () => void
 
 						{page === 1 ? (
 							<Button
+								isLoading={isLoading}
 								isDisabled={judgingFunction(selectedKeys)}
 								color='primary'
 								onClick={async () => {
 									// fileRef.current?.click();
+									setIsLoading(true);
 									const result = { ...subResult, module: Array.from(selectedKeys)[0] };
 									try {
 										const ForecastData = await postPrediction(result);
@@ -284,6 +293,7 @@ const FormData = ({ data, operatorList, isOpen, onClose }: { onClose: () => void
 									} catch (error) {
 										console.error('Error:', error);
 									}
+									setIsLoading(false);
 								}}
 							>
 								Submit

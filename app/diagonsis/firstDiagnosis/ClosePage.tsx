@@ -50,7 +50,7 @@ function ClosePage({ isLoading, diseasesData }: { isLoading: boolean; diseasesDa
 											onClick={() => handleOpen1(item.name, diseasesData.id)}
 											className='cursor-pointer'
 											key={index}
-											variant='flat'
+											variant='bordered'
 											avatar={<Avatar name='JW' size='sm' src={convertImageFormat(item.icon)} />}
 										>
 											{item.name}
@@ -90,7 +90,7 @@ function ClosePage({ isLoading, diseasesData }: { isLoading: boolean; diseasesDa
 					</div>
 				</div>
 			</div>
-			<FormData data={enterObject} operatorList={operatorList}  onClose={onClose1}  isOpen={isOpen1} />
+			<FormData data={enterObject} operatorList={operatorList} onClose={onClose1} isOpen={isOpen1} />
 
 			{/* <EnterModal isReset={true} enterObject={enterObject} operatorList={operatorList} isOpen={isOpen1} onClose={onClose1} /> */}
 		</div>
